@@ -1,0 +1,44 @@
+{% extends "base.html" %}
+{% block title %}Collector Dashboard - Smart Waste Collection Management{% endblock %}
+{% block extra_head %}
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/leaflet/1.9.4/leaflet.min.css">
+{% endblock %}
+{% block content %}
+<div class="page-header"><h1 id="collector-welcome">Collector Dashboard</h1>
+    <button class="btn btn-secondary" id="btn-refresh">Refresh</button></div>
+
+<section id="today">
+    <h2>Today's Assignment</h2>
+    <div class="collector-grid">
+        <div id="assignment-card" class="card"><p class="empty-row">Loading...</p></div>
+        <div class="card"><div id="collector-map" class="collector-map"></div>
+            <p class="map-hint">Road route from the routing engine. The current trip is highlighted; the next bin has a cyan ring.</p></div>
+    </div>
+    <div id="sequence-card" class="card"></div>
+</section>
+
+<section id="vehicle">
+    <h2>My Vehicle</h2>
+    <div class="card" id="vehicle-card"><p class="empty-row">Loading...</p></div>
+</section>
+
+<section id="assigned">
+    <h2>Assigned Routes</h2>
+    <div class="card" id="assigned-card"><p class="empty-row">Loading...</p></div>
+</section>
+
+<section id="history">
+    <h2>Collection History</h2>
+    <div class="card" id="history-card"><p class="empty-row">Loading...</p></div>
+</section>
+
+<section id="profile">
+    <h2>Profile</h2>
+    <div class="card" id="profile-card"><p class="empty-row">Loading...</p></div>
+</section>
+{% endblock %}
+{% block extra_scripts %}
+<script src="https://cdnjs.cloudflare.com/ajax/libs/leaflet/1.9.4/leaflet.min.js"></script>
+<script src="{{ url_for('static', filename='js/route_view.js') }}"></script>
+<script src="{{ url_for('static', filename='js/collector_dashboard.js') }}"></script>
+{% endblock %}

@@ -1,0 +1,11 @@
+{% extends "base.html" %}
+{% block title %}Profile - Smart Waste Collection Management{% endblock %}
+{% block content %}
+<div class="page-header"><h1>My Profile</h1></div>
+<div class="card auth-card" id="profile-card">
+    <p class="empty-row">Loading...</p>
+</div>
+{% endblock %}
+{% block extra_scripts %}
+<script src="{{ url_for('static', filename='js/profile.js') }}"></script>
+{% endblock %}

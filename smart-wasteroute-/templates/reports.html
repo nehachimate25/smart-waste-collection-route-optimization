@@ -1,0 +1,36 @@
+{% extends "base.html" %}
+{% block title %}Reports - Smart Waste Collection Management{% endblock %}
+{% block content %}
+<div class="page-header">
+    <h1>Reports</h1>
+    <button id="btn-refresh-reports" class="btn btn-secondary">Refresh</button>
+</div>
+
+<div id="report-cards-grid" class="stat-cards-grid"><div class="empty-row">Loading reports...</div></div>
+
+<div class="dashboard-row">
+    <div class="card">
+        <h3>Per Vehicle Performance</h3>
+        <table class="data-table">
+            <thead><tr><th>Vehicle</th><th>Trips</th><th>Waste Filled Times</th><th>Distance Covered</th><th>Waste</th><th>Utilization</th></tr></thead>
+            <tbody id="per-vehicle-table-body"><tr><td colspan="6" class="empty-row">Loading...</td></tr></tbody>
+        </table>
+        <p class="form-hint">
+            <strong>Trips</strong> = completed trips (depot &rarr; bins &rarr; depot).
+            <strong>Waste Filled Times</strong> = times the vehicle reached capacity and had to unload at the depot.
+            <strong>Distance Covered</strong> = total road distance of completed trips.
+            <strong>Utilization</strong> = waste collected &divide; capacity offered by those trips.
+        </p>
+    </div>
+    <div class="card">
+        <h3>Most Frequently Collected Bins</h3>
+        <table class="data-table">
+            <thead><tr><th>Bin</th><th>Times Collected</th></tr></thead>
+            <tbody id="top-bins-table-body"><tr><td colspan="2" class="empty-row">Loading...</td></tr></tbody>
+        </table>
+    </div>
+</div>
+{% endblock %}
+{% block extra_scripts %}
+<script src="{{ url_for('static', filename='js/reports.js') }}"></script>
+{% endblock %}

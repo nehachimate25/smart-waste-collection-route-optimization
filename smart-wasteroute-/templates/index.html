@@ -1,0 +1,88 @@
+{% extends "base.html" %}
+
+{% block title %}Smart Waste Collection Management{% endblock %}
+
+{% block content %}
+<section class="hero">
+    <h1>Smart Waste Collection Management</h1>
+    <h3>Intelligent Route Optimization Using Data Structures and Algorithms</h3>
+
+    <p class="hero-description">
+        Report a waste bin's location and fill level, and the system automatically works out
+        its priority, plans an optimized collection route using a Graph, Priority Queue, Min
+        Heap, and Dijkstra's algorithm, and hands it to a collector to execute stop by stop.
+        The map (Leaflet + OpenStreetMap, no API key needed) only visualizes locations and
+        routes - every distance calculation and every routing decision happens in this
+        application's own Python code.
+    </p>
+
+    {% if session.get('role') == 'user' %}
+        <div class="hero-actions">
+            <a href="{{ url_for('dashboard_page') }}" class="btn btn-primary">Go to Dashboard</a>
+        </div>
+    {% elif session.get('role') == 'collector' %}
+        <div class="hero-actions">
+            <a href="{{ url_for('collector_dashboard_page') }}" class="btn btn-primary">Go to Collector Dashboard</a>
+        </div>
+    {% else %}
+        <div class="hero-actions">
+            <a href="{{ url_for('register_page') }}" class="btn btn-primary">Register</a>
+            <a href="{{ url_for('login_page') }}" class="btn btn-secondary">Login</a>
+            <a href="{{ url_for('collector_login_page') }}" class="btn btn-secondary">Collector Login</a>
+            <a href="{{ url_for('data_structures_page') }}" class="btn btn-secondary">Explore System</a>
+        </div>
+    {% endif %}
+</section>
+
+<div class="feature-cards-grid">
+    <div class="card feature-card">
+        <div class="feature-icon">&#128465;</div>
+        <h4>Smart Bin Monitoring</h4>
+        <p>Track every bin's fill level, waste weight, and status in a real database.</p>
+    </div>
+    <div class="card feature-card">
+        <div class="feature-icon">&#128506;</div>
+        <h4>Interactive Waste Map</h4>
+        <p>Click to place bins and the depot on a live Leaflet + OpenStreetMap view - no API key needed.</p>
+    </div>
+    <div class="card feature-card">
+        <div class="feature-icon">&#9888;</div>
+        <h4>Priority-Based Collection</h4>
+        <p>Fill level automatically determines urgency; users can request a priority boost with a reason.</p>
+    </div>
+    <div class="card feature-card">
+        <div class="feature-icon">&#128663;</div>
+        <h4>Route Optimization</h4>
+        <p>A Queue, a Priority Queue (Min Heap), a Graph weighted by real road distance, a Stack and vehicle capacity decide the collection order; the route you see on the map follows real roads from the OSRM routing engine.</p>
+    </div>
+    <div class="card feature-card">
+        <div class="feature-icon">&#127925;</div>
+        <h4>DSA-Based Decision Making</h4>
+        <p>Graph, Min Heap, Priority Queue, Queue, Stack, and Hash Table are genuinely used, not just displayed.</p>
+    </div>
+    <div class="card feature-card">
+        <div class="feature-icon">&#9989;</div>
+        <h4>Real-Time Collection Status</h4>
+        <p>Collectors mark each bin collected in sequence, and every dashboard reflects the database instantly.</p>
+    </div>
+</div>
+
+<div class="card workflow-card">
+    <h3>How It Works</h3>
+    <div class="workflow-diagram">
+        <span class="workflow-step">Report Waste</span>
+        <span class="workflow-arrow">&rarr;</span>
+        <span class="workflow-step">Select Location</span>
+        <span class="workflow-arrow">&rarr;</span>
+        <span class="workflow-step">Add Bin</span>
+        <span class="workflow-arrow">&rarr;</span>
+        <span class="workflow-step">Set Priority</span>
+        <span class="workflow-arrow">&rarr;</span>
+        <span class="workflow-step">Optimize Route</span>
+        <span class="workflow-arrow">&rarr;</span>
+        <span class="workflow-step">Collector</span>
+        <span class="workflow-arrow">&rarr;</span>
+        <span class="workflow-step">Collection Complete</span>
+    </div>
+</div>
+{% endblock %}

@@ -1,0 +1,64 @@
+{% extends "base.html" %}
+{% block title %}Requests - Smart Waste Collection Management{% endblock %}
+{% block extra_head %}
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/leaflet/1.9.4/leaflet.min.css">
+{% endblock %}
+{% block content %}
+<div class="page-header">
+    <h1>Requests &mdash; Update an Existing Route</h1>
+    <div>
+        <a class="btn btn-secondary" href="{{ url_for('add_bin_page') }}">+ Add new bins</a>
+        <button id="btn-refresh-requests" class="btn btn-secondary">Refresh</button>
+    </div>
+</div>
+
+<div class="card">
+    <h3>1. Choose a saved route</h3>
+    <p class="form-hint">Only a route the collector has not started yet can be updated. Updating never edits the old route: it creates a new version (e.g. R001 &rarr; R001-V2) and keeps the original in History.</p>
+    <div class="form-row"><select id="route-select"><option value="">Loading routes...</option></select></div>
+    <div id="route-info"></div>
+</div>
+
+<div class="dashboard-row">
+    <div class="card">
+        <h3>2. Pending bins <span class="section-subtitle">(Queue &mdash; arrival order)</span></h3>
+        <p class="form-hint">Tick the bins to add to the selected route.</p>
+        <table class="data-table">
+            <thead><tr><th></th><th>#</th><th>Bin</th><th>Level</th><th>Waste</th><th>Priority</th></tr></thead>
+            <tbody id="pending-table-body"><tr><td colspan="6" class="empty-row">Loading...</td></tr></tbody>
+        </table>
+    </div>
+    <div class="card">
+        <h3>Priority order <span class="section-subtitle">(Priority Queue &mdash; urgency order)</span></h3>
+        <table class="data-table">
+            <thead><tr><th>#</th><th>Bin</th><th>Level</th><th>Priority</th></tr></thead>
+            <tbody id="priority-table-body"><tr><td colspan="4" class="empty-row">Loading...</td></tr></tbody>
+        </table>
+        <div id="stale-requests-note" class="stale-note hidden"></div>
+    </div>
+</div>
+
+<div class="card">
+    <h3>3. Recalculate</h3>
+    <div class="form-actions" style="flex-wrap:wrap">
+        <button class="btn btn-primary" id="btn-update-route" disabled>Update Route</button>
+        <button class="btn btn-danger" id="btn-cancel-route" disabled>Cancel selected route</button>
+        <span id="update-hint" class="ds-meta" style="align-self:center"></span>
+    </div>
+</div>
+
+<div id="preview-section" style="display:none">
+    <div id="preview-warning"></div>
+    <div id="preview-map" class="planner-map" style="height:380px; margin:1rem 0"></div>
+    <div id="preview-summary"></div>
+    <div class="form-actions" style="margin:1rem 0">
+        <button class="btn btn-secondary" id="btn-regenerate">Regenerate</button>
+        <button class="btn btn-primary" id="btn-save-version">Save as new version</button>
+    </div>
+</div>
+{% endblock %}
+{% block extra_scripts %}
+<script src="https://cdnjs.cloudflare.com/ajax/libs/leaflet/1.9.4/leaflet.min.js"></script>
+<script src="{{ url_for('static', filename='js/route_view.js') }}"></script>
+<script src="{{ url_for('static', filename='js/requests.js') }}"></script>
+{% endblock %}

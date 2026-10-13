@@ -1,0 +1,156 @@
+{% extends "base.html" %}
+
+{% block title %}Data Structures - Smart Waste Collection Management{% endblock %}
+
+{% block content %}
+<div class="page-header">
+    <h1>Data Structures Used</h1>
+    <button id="btn-refresh-ds" class="btn btn-secondary">Refresh Live Data</button>
+</div>
+<p class="form-hint ds-intro">
+    Every panel below shows data pulled live from the running application by genuinely
+    re-executing each structure's real operations - nothing here is a hard-coded example.
+</p>
+
+<!-- ================= GRAPH / ADJACENCY LIST ================= -->
+<div class="card ds-section">
+    <h2>Graph <span class="section-subtitle">+ Adjacency List</span></h2>
+    <p><strong>Definition:</strong> A set of vertices connected by weighted edges.</p>
+    <p><strong>Purpose in this project:</strong> Represents the depot and waste-bin network. Each vertex is a location (depot or bin); each edge's weight is a distance between two locations. The Add Bins &amp; Route planner weights edges with real ROAD distance from OSRM; this page's demo graph uses Haversine (straight-line) distance for academic illustration only. The road lines drawn on the map come from OSRM, never from this graph.</p>
+    <p><strong>Example:</strong> <code>Depot &rarr; Bin A : 2.4 km</code></p>
+    <p><strong>Main operations:</strong> add_vertex, add_edge, get_neighbors, bfs, is_connected</p>
+    <table class="complexity-table">
+        <tr><th>Operation</th><th>Time</th><th>Space</th></tr>
+        <tr><td>add_vertex / add_edge</td><td>O(1) average</td><td rowspan="3">O(V + E)</td></tr>
+        <tr><td>get_neighbors</td><td>O(1) average</td></tr>
+        <tr><td>bfs / is_connected</td><td>O(V + E)</td></tr>
+    </table>
+
+    <h4>Live Data</h4>
+    <div id="graph-live"><p class="empty-row">Loading...</p></div>
+</div>
+
+<!-- ================= PRIORITY QUEUE + MIN HEAP ================= -->
+<div class="card ds-section">
+    <h2>Priority Queue <span class="section-subtitle">+ Min Heap</span></h2>
+    <p><strong>Definition:</strong> A queue where each item has a priority; the highest-priority item is always removed first, backed internally by a binary Min Heap.</p>
+    <p><strong>Purpose in this project:</strong> Manages bins according to waste priority - CRITICAL bins are always collected before LOW ones, regardless of report order.</p>
+    <p><strong>Example:</strong> <code>Bin B &rarr; 95% &rarr; CRITICAL</code> is popped before <code>Bin D &rarr; 30% &rarr; LOW</code></p>
+    <p><strong>Main operations:</strong> push, pop, peek, heapify (bulk build)</p>
+    <table class="complexity-table">
+        <tr><th>Operation</th><th>Time</th><th>Space</th></tr>
+        <tr><td>push / pop</td><td>O(log n)</td><td rowspan="3">O(n)</td></tr>
+        <tr><td>peek</td><td>O(1)</td></tr>
+        <tr><td>heapify (bulk build)</td><td>O(n)</td></tr>
+    </table>
+
+    <h4>Live Data <span class="section-subtitle">(same pending requests as the Queue below, reordered by urgency)</span></h4>
+    <div id="priority-queue-live"><p class="empty-row">Loading...</p></div>
+</div>
+
+<!-- ================= QUEUE ================= -->
+<div class="card ds-section">
+    <h2>Queue</h2>
+    <p><strong>Definition:</strong> A First-In-First-Out (FIFO) structure.</p>
+    <p><strong>Purpose in this project:</strong> Holds pending collection requests in the order they were reported, before urgency is evaluated.</p>
+    <p><strong>Example:</strong> <code>Front &rarr; Bin B &rarr; Bin C &rarr; Bin A &rarr; Bin D &larr; Rear</code></p>
+    <p><strong>Main operations:</strong> enqueue, dequeue, front</p>
+    <table class="complexity-table">
+        <tr><th>Operation</th><th>Time</th><th>Space</th></tr>
+        <tr><td>enqueue / dequeue / front</td><td>O(1)</td><td>O(n)</td></tr>
+    </table>
+
+    <h4>Live Data</h4>
+    <div id="queue-live"><p class="empty-row">Loading...</p></div>
+</div>
+
+<!-- ================= STACK ================= -->
+<div class="card ds-section">
+    <h2>Stack</h2>
+    <p><strong>Definition:</strong> A Last-In-First-Out (LIFO) structure.</p>
+    <p><strong>Purpose in this project:</strong> Records each stop a vehicle visits, in visit order - enabling "most recently visited" display and undo-the-last-stop behaviour.</p>
+    <p><strong>Example:</strong> pushing Depot &rarr; Bin B &rarr; Bin C means Bin C is on top and would be popped (undone) first.</p>
+    <p><strong>Main operations:</strong> push, pop, peek</p>
+    <table class="complexity-table">
+        <tr><th>Operation</th><th>Time</th><th>Space</th></tr>
+        <tr><td>push / pop / peek</td><td>O(1)</td><td>O(n)</td></tr>
+    </table>
+
+    <h4>Live Data <span class="section-subtitle">(reconstructed from the most recently generated route)</span></h4>
+    <div id="stack-live"><p class="empty-row">Loading...</p></div>
+</div>
+
+<!-- ================= HASH TABLE ================= -->
+<div class="card ds-section">
+    <h2>Hash Table</h2>
+    <p><strong>Definition:</strong> Maps keys to values using a hash function, with collisions handled by separate chaining (each bucket holds a small list of entries).</p>
+    <p><strong>Purpose in this project:</strong> Fast O(1) average lookup of a bin or vehicle by its ID.</p>
+    <p><strong>Example:</strong> <code>BIN001 &rarr; Bin object</code></p>
+    <p><strong>Main operations:</strong> put, get, delete</p>
+    <table class="complexity-table">
+        <tr><th>Operation</th><th>Time (average)</th><th>Time (worst case)</th><th>Space</th></tr>
+        <tr><td>put / get / delete</td><td>O(1)</td><td>O(n)</td><td>O(n)</td></tr>
+    </table>
+    <p class="form-hint">
+        The live application uses Python's built-in <code>dict</code> for real lookups
+        (it <em>is</em> a hash table internally) - the table below uses our own custom
+        <code>HashTable</code> class so the hash values and bucket mechanics are visible,
+        which <code>dict</code> normally hides.
+    </p>
+
+    <h4>Live Data</h4>
+    <div id="hash-table-live"><p class="empty-row">Loading...</p></div>
+</div>
+
+<!-- ================= LIST / DYNAMIC ARRAY ================= -->
+<div class="card ds-section">
+    <h2>List / Dynamic Array</h2>
+    <p><strong>Definition:</strong> A resizable, ordered collection of elements.</p>
+    <p><strong>Purpose in this project:</strong> Stores collections of bins, vehicles, and route stops throughout the codebase (Python's built-in <code>list</code>).</p>
+    <p><strong>Main operations:</strong> append, index access, iteration</p>
+    <table class="complexity-table">
+        <tr><th>Operation</th><th>Time</th><th>Space</th></tr>
+        <tr><td>append (amortized)</td><td>O(1)</td><td rowspan="2">O(n)</td></tr>
+        <tr><td>index access</td><td>O(1)</td></tr>
+    </table>
+
+    <h4>Live Data</h4>
+    <div id="list-array-live"><p class="empty-row">Loading...</p></div>
+</div>
+
+<!-- ================= CLASSES AND OBJECTS ================= -->
+<div class="card ds-section">
+    <h2>Classes and Objects</h2>
+    <p><strong>Definition:</strong> User-defined types that bundle data (attributes) and behaviour (methods) together.</p>
+    <p><strong>Purpose in this project:</strong> <code>Bin</code>, <code>Vehicle</code>, and <code>Route</code> are the object types every other data structure actually stores and operates on - a Graph vertex holds a Bin's data, the Hash Table's values are Bins, the Priority Queue orders Bin-carrying requests.</p>
+    <p><strong>Example:</strong> <code>Bin.update_waste_level()</code> is the only way a bin's priority can change - guaranteeing waste level and priority can never drift out of sync.</p>
+</div>
+
+<!-- ================= DIJKSTRA (algorithm, not a data structure) ================= -->
+<div class="card ds-section">
+    <h2>Dijkstra's Shortest Path <span class="section-subtitle">(supporting algorithm, not a data structure)</span></h2>
+    <p><strong>Why it's needed:</strong> answers "what is the shortest path between any two points in the network?" - a separate, optional feature from the Priority-Queue-driven collection order.</p>
+    <p><strong>Which data structures it uses:</strong> our own <code>Graph</code> (to know connections) and <code>MinHeap</code> (to always expand the closest unvisited location next) - the same MinHeap class the Priority Queue is built on.</p>
+    <p><strong>Time complexity:</strong> O((V + E) log V) &middot; <strong>Space complexity:</strong> O(V)</p>
+
+    <h4>Try it</h4>
+    <div class="form-row-split route-controls">
+        <div>
+            <label for="dijkstra-start">Start</label>
+            <select id="dijkstra-start"><option value="">Loading...</option></select>
+        </div>
+        <div>
+            <label for="dijkstra-destination">Destination</label>
+            <select id="dijkstra-destination"><option value="">Loading...</option></select>
+        </div>
+        <div class="route-generate-btn-wrap">
+            <button id="btn-run-dijkstra" class="btn btn-primary">Find Shortest Path</button>
+        </div>
+    </div>
+    <div id="dijkstra-result" class="route-summary hidden"></div>
+</div>
+{% endblock %}
+
+{% block extra_scripts %}
+<script src="{{ url_for('static', filename='js/data_structures.js') }}"></script>
+{% endblock %}

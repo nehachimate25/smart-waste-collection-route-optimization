@@ -1,0 +1,129 @@
+{% extends "base.html" %}
+{% block title %}Add Bins &amp; Route - Smart Waste Collection Management{% endblock %}
+{% block extra_head %}
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/leaflet/1.9.4/leaflet.min.css">
+{% endblock %}
+{% block content %}
+<div class="page-header">
+    <h1>Add Bins &amp; Generate Collection Route</h1>
+    <button class="btn btn-secondary" id="btn-new-session">New planning session</button>
+</div>
+
+<div class="stepper stepper-5" id="stepper">
+    <div class="step-indicator" data-step="1">1. Add Locations</div>
+    <div class="step-indicator" data-step="2">2. Waste Details</div>
+    <div class="step-indicator" data-step="3">3. Priority</div>
+    <div class="step-indicator" data-step="4">4. Generate Route</div>
+    <div class="step-indicator" data-step="5">5. Save</div>
+</div>
+
+<div class="planner-grid">
+    <div class="planner-left">
+        <div class="card">
+            <h3>Route Planning</h3>
+            <div id="depot-card"></div>
+        </div>
+
+        <div class="card">
+            <div class="page-header" style="margin-bottom:.5rem">
+                <h3 style="margin:0">Bins Added <span id="bin-count" class="ds-meta"></span></h3>
+                <button class="btn btn-primary btn-small" id="btn-add-bin">+ Add Another Bin</button>
+            </div>
+            <div id="bin-list" class="bin-list"><p class="empty-row">Click the map to add your first bin.</p></div>
+            <details class="dsa-box" id="pending-box" style="display:none">
+                <summary>Add other pending bins (from the Queue)</summary>
+                <div id="pending-list"></div>
+            </details>
+        </div>
+    </div>
+
+    <div class="planner-right">
+        <div id="planner-map" class="planner-map"></div>
+        <p class="map-hint" id="map-hint">Loading...</p>
+    </div>
+</div>
+
+<div class="planner-bottom">
+    <div class="card">
+        <h3>Priority Analysis</h3>
+        <p class="form-hint">Choose how the route should prioritize bins:</p>
+        <div id="mode-options" class="mode-options"></div>
+        <p class="form-hint" style="margin-top:.8rem">Waste-level bands (single source: <code>utils/priority_config.py</code>):</p>
+        <div id="threshold-row" class="threshold-row"></div>
+    </div>
+
+    <div class="card">
+        <h3>Available Collection Vehicles</h3>
+        <p class="form-hint">Vehicles belong to collectors. You can only choose one here - vehicle details are managed in the Collector Dashboard.</p>
+        <div id="vehicle-options" class="vehicle-options"><p class="empty-row">Loading vehicles...</p></div>
+    </div>
+</div>
+
+<div class="card" style="margin-top:1rem">
+    <h3>Priority Analysis Table</h3>
+    <div id="analysis-warning"></div>
+    <div id="analysis-wrap" class="analysis-table-wrap"><p class="empty-row">Add at least one bin to see the priority analysis.</p></div>
+    <div class="form-actions" style="margin-top:1rem; flex-wrap:wrap">
+        <button class="btn btn-primary" id="btn-generate" disabled>GENERATE ROUTE ACCORDING TO PRIORITY</button>
+        <span id="generate-hint" class="ds-meta" style="align-self:center"></span>
+    </div>
+</div>
+
+<div id="result-section" style="display:none; margin-top:1rem">
+    <div id="result-warning"></div>
+    <div id="result-summary"></div>
+    <div class="form-actions" style="margin:1rem 0">
+        <button class="btn btn-secondary" id="btn-regenerate">Regenerate Route</button>
+        <button class="btn btn-primary" id="btn-save">Save Route</button>
+    </div>
+    <details class="dsa-box" id="dsa-box">
+        <summary>Academic route logic (Queue &rarr; Priority Queue &rarr; Graph &rarr; Stack)</summary>
+        <div id="dsa-content"></div>
+    </details>
+</div>
+
+<!-- BIN INFORMATION MODAL -->
+<div id="bin-modal" class="modal-overlay hidden">
+    <div class="modal-box">
+        <h3 id="bin-modal-title">Bin Information</h3>
+        <div class="form-row-split">
+            <div><label>Latitude</label><input type="text" id="bm-lat" disabled></div>
+            <div><label>Longitude</label><input type="text" id="bm-lng" disabled></div>
+        </div>
+        <div class="form-row"><label for="bm-name">Bin name</label><input type="text" id="bm-name" placeholder="e.g. Bin near College Gate"></div>
+        <div class="form-row" id="bm-image-row">
+            <label for="bm-image">Bin image (optional)</label>
+            <input type="file" id="bm-image" accept="image/*" capture="environment">
+        </div>
+        <div class="form-row">
+            <label for="bm-level">Waste level: <strong id="bm-level-label">0%</strong></label>
+            <input type="range" id="bm-level" min="0" max="100" value="0">
+            <div class="fill-bar-track"><div class="fill-bar-fill" id="bm-fill"></div></div>
+            <p class="ds-meta">Priority: <span id="bm-priority" class="badge badge-low">LOW</span></p>
+        </div>
+        <div class="form-row-split">
+            <div><label for="bm-kg">Current waste (kg)</label><input type="number" id="bm-kg" min="0" step="any" value="0"></div>
+            <div><label for="bm-cap">Maximum capacity (kg)</label><input type="number" id="bm-cap" min="1" step="any" value="100"></div>
+        </div>
+        <div class="form-row"><label for="bm-cat">Waste category</label><input type="text" id="bm-cat" placeholder="e.g. General, Recyclable, Organic"></div>
+        <div class="form-row"><label for="bm-notes">Notes</label><input type="text" id="bm-notes"></div>
+        <div class="form-row" id="bm-boost-row">
+            <label><input type="checkbox" id="bm-boost"> Request priority boost</label>
+            <div id="bm-boost-fields" class="hidden form-row-split">
+                <select id="bm-boost-priority"><option>MEDIUM</option><option>HIGH</option><option selected>CRITICAL</option></select>
+                <select id="bm-boost-reason"><option>Overflow risk</option><option>Bad smell</option><option>Public area</option><option>Health concern</option><option>Event nearby</option><option>Other</option></select>
+            </div>
+        </div>
+        <div id="bm-error" class="form-error hidden"></div>
+        <div class="form-actions">
+            <button class="btn btn-secondary" id="bm-cancel">Cancel</button>
+            <button class="btn btn-primary" id="bm-save">Save Bin</button>
+        </div>
+    </div>
+</div>
+{% endblock %}
+{% block extra_scripts %}
+<script src="https://cdnjs.cloudflare.com/ajax/libs/leaflet/1.9.4/leaflet.min.js"></script>
+<script src="{{ url_for('static', filename='js/route_view.js') }}"></script>
+<script src="{{ url_for('static', filename='js/add_bin.js') }}"></script>
+{% endblock %}

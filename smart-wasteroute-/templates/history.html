@@ -1,0 +1,41 @@
+{% extends "base.html" %}
+{% block title %}History - Smart Waste Collection Management{% endblock %}
+{% block extra_head %}
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/leaflet/1.9.4/leaflet.min.css">
+{% endblock %}
+{% block content %}
+<div class="page-header">
+    <h1>Collection History</h1>
+    <button id="btn-refresh-history" class="btn btn-secondary">Refresh</button>
+</div>
+
+<div class="form-row" style="max-width:420px">
+    <label for="chart-route">Route used for the Sequence and Vehicle Load charts</label>
+    <select id="chart-route"></select>
+</div>
+<div class="chart-grid" id="chart-grid">
+    <div class="chart-card" data-chart="distance"><h4>Distance Covered <span>km per completed route</span></h4><div class="chart-body"></div></div>
+    <div class="chart-card" data-chart="waste"><h4>Waste Collected <span>kg per completed route</span></h4><div class="chart-body"></div></div>
+    <div class="chart-card" data-chart="time"><h4>Estimated Travel Time <span>min per completed route</span></h4><div class="chart-body"></div></div>
+    <div class="chart-card" data-chart="trips"><h4>Vehicle Trips <span>completed trips per vehicle</span></h4><div class="chart-body"></div></div>
+    <div class="chart-card" data-chart="sequence"><h4>Collection Sequence <span>selected route</span></h4><div class="chart-body"></div></div>
+    <div class="chart-card" data-chart="load"><h4>Vehicle Load <span>kg after each stop</span></h4><div class="chart-body"></div></div>
+</div>
+
+<div id="routes-list"><p class="empty-row">Loading history...</p></div>
+<div id="legacy-section"></div>
+
+<div id="chart-modal" class="modal-overlay hidden">
+    <div class="modal-box">
+        <h3 id="chart-modal-title"></h3>
+        <div class="chart-body" id="chart-modal-body"></div>
+        <div class="form-actions" style="margin-top:1rem"><button class="btn btn-secondary" id="chart-modal-close">Close</button></div>
+    </div>
+</div>
+{% endblock %}
+{% block extra_scripts %}
+<script src="https://cdnjs.cloudflare.com/ajax/libs/leaflet/1.9.4/leaflet.min.js"></script>
+<script src="{{ url_for('static', filename='js/route_view.js') }}"></script>
+<script src="{{ url_for('static', filename='js/charts.js') }}"></script>
+<script src="{{ url_for('static', filename='js/history.js') }}"></script>
+{% endblock %}

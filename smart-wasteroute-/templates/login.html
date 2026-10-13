@@ -1,0 +1,28 @@
+{% extends "base.html" %}
+{% block title %}Login - Smart Waste Collection Management{% endblock %}
+{% block content %}
+<div class="auth-page">
+    <div class="card auth-card">
+        <h2>User Login</h2>
+        <form id="login-form">
+            <div class="form-row">
+                <label for="identifier">User ID or Email</label>
+                <input type="text" id="identifier" placeholder="USR1001 or you@example.com" required>
+            </div>
+            <div class="form-row">
+                <label for="password">Password</label>
+                <input type="password" id="password" required>
+            </div>
+            <div id="login-error" class="form-error hidden"></div>
+            <div class="form-actions">
+                <button type="submit" class="btn btn-primary">Login</button>
+            </div>
+        </form>
+        <p class="auth-switch">New here? <a href="{{ url_for('register_page') }}">Register</a></p>
+        <p class="auth-switch">Are you a collector? <a href="{{ url_for('collector_login_page') }}">Collector Portal</a></p>
+    </div>
+</div>
+{% endblock %}
+{% block extra_scripts %}
+<script src="{{ url_for('static', filename='js/login.js') }}"></script>
+{% endblock %}

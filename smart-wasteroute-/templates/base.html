@@ -1,0 +1,54 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>{% block title %}Smart Waste Collection Management{% endblock %}</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}">
+    {% block extra_head %}{% endblock %}
+</head>
+<body>
+
+    <nav class="navbar">
+        <div class="nav-brand"><a href="{{ url_for('home') }}">&#9851; Smart Waste Collection</a></div>
+        <ul class="nav-links">
+            {% if session.get('role') == 'user' %}
+                <li><a href="{{ url_for('dashboard_page') }}">Dashboard</a></li>
+                <li><a href="{{ url_for('add_bin_page') }}">Add Bins &amp; Route</a></li>
+                <li><a href="{{ url_for('requests_page') }}">Requests</a></li>
+                <li><a href="{{ url_for('history_page') }}">History</a></li>
+                <li><a href="{{ url_for('reports_page') }}">Reports</a></li>
+                <li><a href="{{ url_for('data_structures_page') }}">Data Structures</a></li>
+                <li><a href="{{ url_for('profile_page') }}">Profile</a></li>
+                <li><a href="#" onclick="logoutUser(); return false;">Logout</a></li>
+            {% elif session.get('role') == 'collector' %}
+                <li><a href="{{ url_for('collector_dashboard_page') }}">Collector Dashboard</a></li>
+                <li><a href="{{ url_for('collector_dashboard_page') }}#vehicle">My Vehicle</a></li>
+                <li><a href="{{ url_for('collector_dashboard_page') }}#assigned">Assigned Routes</a></li>
+                <li><a href="{{ url_for('collector_dashboard_page') }}#history">Collection History</a></li>
+                <li><a href="{{ url_for('collector_dashboard_page') }}#profile">Profile</a></li>
+                <li><a href="#" onclick="logoutCollector(); return false;">Logout</a></li>
+            {% else %}
+                <li><a href="{{ url_for('data_structures_page') }}">Data Structures</a></li>
+                <li><a href="{{ url_for('login_page') }}">Login</a></li>
+                <li><a href="{{ url_for('collector_login_page') }}">Collector Login</a></li>
+                <li><a href="{{ url_for('register_page') }}" class="nav-cta">Register</a></li>
+            {% endif %}
+        </ul>
+    </nav>
+
+    <main class="page-content">
+        {% block content %}{% endblock %}
+    </main>
+
+    <footer class="footer">
+        <p>Smart Waste Collection Management &mdash; Data Structures Project (2nd Year B.Tech IT)</p>
+    </footer>
+
+    <div id="toast-container" class="toast-container"></div>
+    <script src="{{ url_for('static', filename='js/toast.js') }}"></script>
+    <script src="{{ url_for('static', filename='js/auth-nav.js') }}"></script>
+    <script src="{{ url_for('static', filename='js/common.js') }}"></script>
+    {% block extra_scripts %}{% endblock %}
+</body>
+</html>

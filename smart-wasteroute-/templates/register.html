@@ -1,0 +1,52 @@
+{% extends "base.html" %}
+{% block title %}Register - Smart Waste Collection Management{% endblock %}
+{% block content %}
+<div class="auth-page">
+    <div class="card auth-card">
+        <h2>Create Your Account</h2>
+        <form id="register-form">
+            <div class="form-row">
+                <label for="full_name">Full Name</label>
+                <input type="text" id="full_name" required>
+            </div>
+            <div class="form-row form-row-split">
+                <div>
+                    <label for="date_of_birth">Date of Birth</label>
+                    <input type="date" id="date_of_birth" required>
+                </div>
+                <div>
+                    <label>Age</label>
+                    <input type="text" id="computed_age" disabled placeholder="Calculated automatically">
+                </div>
+            </div>
+            <div class="form-row">
+                <label for="email">Email</label>
+                <input type="email" id="email" required>
+            </div>
+            <div class="form-row">
+                <label for="mobile">Mobile Number</label>
+                <input type="tel" id="mobile" placeholder="9876543210" required>
+            </div>
+            <div class="form-row form-row-split">
+                <div>
+                    <label for="password">Password</label>
+                    <input type="password" id="password" minlength="6" required>
+                </div>
+                <div>
+                    <label for="confirm_password">Confirm Password</label>
+                    <input type="password" id="confirm_password" minlength="6" required>
+                </div>
+            </div>
+            <div id="register-error" class="form-error hidden"></div>
+            <div id="register-success" class="status-box hidden"></div>
+            <div class="form-actions">
+                <button type="submit" class="btn btn-primary">Register</button>
+            </div>
+        </form>
+        <p class="auth-switch">Already have an account? <a href="{{ url_for('login_page') }}">Login here</a></p>
+    </div>
+</div>
+{% endblock %}
+{% block extra_scripts %}
+<script src="{{ url_for('static', filename='js/register.js') }}"></script>
+{% endblock %}
